@@ -1,0 +1,28 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: smartmath-backend
+  profiles:
+    active:
+      - local
+  datasource:
+    url: jdbc:postgresql://localhost:5432/smartmath
+    username: postgres
+    password: password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+application:
+  security:
+    jwt:
+      expiration: 86400000
+      refresh-token:
+        expiration: 604800000
