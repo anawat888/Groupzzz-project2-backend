@@ -11,10 +11,10 @@ public interface AdminMapper {
 
     LevelSummaryDTO getLevelSummaryDto(Level level);
     LevelDTO getLevelDto(Level level);
-    List<LevelDTO> getDevelDto(List<Level> levels);
+    List<LevelDTO> getLevelDto(List<Level> levels);
 
-    BenefitDTO getBeneFitDto(Benefit benefit);
-    ServiceItemDTO getServiceItemDTO(ServiceItem serviceItem);
+    BenefitDTO getBenefitDto(Benefit benefit);
+    ServiceItemDTO getServiceItemDto(ServiceItem serviceItem);
 
     QuestionDTO getQuestionDto(Question question);
     List<QuestionDTO> getQuestionDto(List<Question> questions);
