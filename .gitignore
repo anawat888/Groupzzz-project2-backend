@@ -6,3 +6,4 @@ dist/
 application-local.yml
 .env
 .env.*
+backend/src/main/java/se331/zzz/config/TempSecurityConfig.java
