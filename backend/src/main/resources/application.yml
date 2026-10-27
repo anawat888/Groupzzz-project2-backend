@@ -6,6 +6,7 @@ spring:
     name: smartmath-backend
   profiles:
     active:
+      - db
       - local
   datasource:
     url: jdbc:postgresql://localhost:5432/smartmath
