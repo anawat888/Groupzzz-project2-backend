@@ -18,4 +18,10 @@ public interface AdminMapper {
 
     QuestionDTO getQuestionDto(Question question);
     List<QuestionDTO> getQuestionDto(List<Question> questions);
+
+    ExamQuestionDTO getExamQuestionDto(Question question);
+    List<ExamQuestionDTO> getExamQuestionDto(List<Question> questions);
+
+    ExamAttemptDTO getExamAttemptDto(ExamAttempt attempt);
+    List<ExamAttemptDTO> getExamAttemptDto(List<ExamAttempt> attempts);
 }
