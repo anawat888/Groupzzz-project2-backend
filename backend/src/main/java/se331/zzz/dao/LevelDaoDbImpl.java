@@ -27,4 +27,9 @@ public class LevelDaoDbImpl implements LevelDao {
     public Level save(Level level){
         return levelRepository.save(level);
     }
+
+    @Override
+    public Level findNext(Long id) {
+        return null;
+    }
 }
