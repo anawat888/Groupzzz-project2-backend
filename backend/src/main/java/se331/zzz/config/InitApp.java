@@ -16,6 +16,7 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent>{
     final BenefitRepository benefitRepository;
     final ServiceItemRepository serviceItemRepository;
     final QuestionRepository questionRepository;
+    final ElearningContentRepository elearningContentRepository;
 
     @Override 
     @Transactional 
@@ -71,6 +72,11 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent>{
         addQuestion(level4, "What is x if x/2 = 9?", List.of("16", "17", "18", "19"), "18");
         addQuestion(level4, "Simplify: 3x + 2x", List.of("4x", "5x", "6x", "5x^2"), "5x");
         addQuestion(level4, "Solve for x: 5x = 2x + 9", List.of("2", "3", "4", "5"), "3");
+
+        addElearning(level1, "Addition & Subtraction", "Learn to add and subtract integers", "https://youtube.com/embed/wNhbz1EUPrc");
+        addElearning(level2, "Multiplication & Division", "Learn to multiply and divide integers", "https://youtube.com/embed/e7WGZHTZm0I");
+        addElearning(level3, "Fractions & Decimals", "Learn fractions and decimals", "https://youtube.com/embed/Vb5c7ay0ziU");
+        addElearning(level4, "Basic Algebra", "Introduction to solving for x", "https://youtube.com/embed/kWOTmyoaWJg");
     }
 
     private void addBenefit(Level level,String title,String description){
@@ -87,6 +93,12 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent>{
         ServiceItem service = serviceItemRepository.save(ServiceItem.builder().name(name).description(description).build());
         service.setLevel(level);
         level.getServices().add(service);
+    }
+
+    private void addElearning(Level level, String title, String description, String videoUrl) {
+        ElearningContent content = elearningContentRepository.save(
+                ElearningContent.builder().title(title).description(description).videoUrl(videoUrl).build());
+        content.setLevel(level);
     }
     
 }
