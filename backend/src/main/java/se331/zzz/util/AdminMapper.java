@@ -24,4 +24,7 @@ public interface AdminMapper {
 
     ExamAttemptDTO getExamAttemptDto(ExamAttempt attempt);
     List<ExamAttemptDTO> getExamAttemptDto(List<ExamAttempt> attempts);
+
+    ElearningContentDTO getElearningContentDto(ElearningContent content);
+    List<ElearningContentDTO> getElearningContentDto(List<ElearningContent> contents);
 }
