@@ -27,4 +27,9 @@ public class UserExamController {
     public ResponseEntity<?> getHistory(@PathVariable("userId") Long userId) {
         return ResponseEntity.ok(AdminMapper.INSTANCE.getExamAttemptDto(examService.getHistory(userId)));
     }
+
+    @GetMapping("/user/{userId}/elearning")
+    public ResponseEntity<?> getElearning(@PathVariable("userId") Long userId) {
+        return ResponseEntity.ok(AdminMapper.INSTANCE.getElearningContentDto(examService.getElearning(userId)));
+    }
 }
