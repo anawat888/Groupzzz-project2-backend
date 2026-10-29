@@ -6,10 +6,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import se331.zzz.dao.ExamAttemptDao;
+import se331.zzz.dao.ElearningContentDao;
 import se331.zzz.dao.LevelDao;
 import se331.zzz.dao.QuestionDao;
 import se331.zzz.dto.ExamResultDTO;
 import se331.zzz.dto.ExamSubmitDTO;
+import se331.zzz.entity.ElearningContent;
 import se331.zzz.entity.ExamAttempt;
 import se331.zzz.entity.Level;
 import se331.zzz.entity.Question;
@@ -22,6 +24,7 @@ public class ExamServiceImpl implements ExamService {
     final QuestionDao questionDao;
     final LevelDao levelDao;
     final ExamAttemptDao examAttemptDao;
+    final ElearningContentDao elearningContentDao;
     final UserLevelPort userLevelPort;
 
     @Override
@@ -84,5 +87,11 @@ public class ExamServiceImpl implements ExamService {
     @Override
     public List<ExamAttempt> getHistory(Long userId) {
         return examAttemptDao.findByUserId(userId);
+    }
+
+    @Override
+    public List<ElearningContent> getElearning(Long userId) {
+        Level level = userLevelPort.getCurrentLevel(userId);
+        return elearningContentDao.findByLevelId(level.getId());
     }
 }
