@@ -11,6 +11,5 @@ public interface ExamService {
     List<Question> getExamQuestions(Long userId);
     ExamResultDTO submit(Long userId, ExamSubmitDTO submit);
     List<ExamAttempt> getHistory(Long userId);
-
     List<ElearningContent> getElearning(Long userId);
 }

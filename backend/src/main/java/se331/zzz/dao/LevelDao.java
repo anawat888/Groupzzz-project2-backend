@@ -5,4 +5,6 @@ public interface LevelDao {
     List<Level> getLevels();
     Optional<Level> findById(Long id);
     Level save(Level level);
+
+    Level findNext(Long id);
 }
