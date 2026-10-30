@@ -19,16 +19,22 @@ public class Level {
     String description;
     Integer passScore;
 
-
+    // Marked: Exclude the lists from toString/equals to avoid infinite recursion (Level <-> children)
     @OneToMany(mappedBy = "level")
-    @Builder.Default 
+    @Builder.Default
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     List<Benefit> benefits = new ArrayList<>();
 
     @OneToMany(mappedBy = "level")
     @Builder.Default
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     List<ServiceItem> services = new ArrayList<>();
 
     @OneToMany(mappedBy = "level")
     @Builder.Default
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     List<Question> questions = new ArrayList<>();
 }
