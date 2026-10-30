@@ -21,6 +21,11 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent>{
     @Override 
     @Transactional 
     public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent){
+        // Marked: Guard in InitApp
+        if (levelRepository.count() > 0) {
+            return;
+        }
+
         Level level1 = levelRepository.save(Level.builder().name("Level 1 Addition & Subtraction").description("Adding and subtracting integers is the starting level for everyone").passScore(60).build());
         Level level2 = levelRepository.save(Level.builder().name("Level 2 Multiplication & Division").description("Multiply and divide integers, including multiplication tables").passScore(70).build());
         Level level3 = levelRepository.save(Level.builder().name("Level 3 Fractions & Decimals").description("Fractions and Decimals: Addition, Subtraction, Multiplication, and Division of Fractions").passScore(80).build());
