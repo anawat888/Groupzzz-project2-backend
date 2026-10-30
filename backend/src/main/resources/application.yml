@@ -16,6 +16,9 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
+  mvc:
+    problemdetails:
+      enabled: true
   servlet:
     multipart:
       max-file-size: 10MB
@@ -24,6 +27,7 @@ spring:
 application:
   security:
     jwt:
+      secret-key: ${JWT_SECRET_KEY}
       expiration: 86400000
       refresh-token:
         expiration: 604800000

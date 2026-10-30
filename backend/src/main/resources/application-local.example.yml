@@ -1,0 +1,4 @@
+application:
+  security:
+    jwt:
+      secret-key: replace-with-output-of-openssl-rand-base64-48
