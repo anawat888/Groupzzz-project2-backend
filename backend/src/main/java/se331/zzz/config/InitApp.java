@@ -2,10 +2,15 @@ package se331.zzz.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import se331.zzz.entity.*;
 import se331.zzz.repository.*;
+import se331.zzz.user.Role;
+import se331.zzz.user.User;
+import se331.zzz.user.UserRepository;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Component 
@@ -17,6 +22,13 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent>{
     final ServiceItemRepository serviceItemRepository;
     final QuestionRepository questionRepository;
     final ElearningContentRepository elearningContentRepository;
+    final UserRepository userRepository;
+    final ExamAttemptRepository examAttemptRepository;
+    final PasswordEncoder passwordEncoder;
+
+    static final List<String> PROVINCES = List.of("Chiang Mai", "Bangkok", "Phuket", "Khon Kaen", "Songkhla", "Nakhon Ratchasima");
+    static final List<String> FIRST_NAMES = List.of("Somchai", "Suda", "Anan", "Malee", "Kittisak", "Pranee", "Nattapong", "Waraporn", "Thanakorn", "Siriporn");
+    static final List<String> SURNAMES = List.of("Jaidee", "Srisuk", "Thongdee", "Wongsa", "Kaewmanee", "Boonmee", "Chaiyaporn", "Rattanakul", "Saelim", "Phromma");
 
     @Override 
     @Transactional 
@@ -82,6 +94,8 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent>{
         addElearning(level2, "Multiplication & Division", "Learn to multiply and divide integers", "https://youtube.com/embed/e7WGZHTZm0I");
         addElearning(level3, "Fractions & Decimals", "Learn fractions and decimals", "https://youtube.com/embed/Vb5c7ay0ziU");
         addElearning(level4, "Basic Algebra", "Introduction to solving for x", "https://youtube.com/embed/kWOTmyoaWJg");
+
+        addUsers(List.of(level1, level2, level3, level4));
     }
 
     private void addBenefit(Level level,String title,String description){
@@ -105,5 +119,73 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent>{
                 ElearningContent.builder().title(title).description(description).videoUrl(videoUrl).build());
         content.setLevel(level);
     }
-    
+
+    private void addUsers(List<Level> levels) {
+        userRepository.save(User.builder()
+                .username("admin")
+                .password(passwordEncoder.encode("admin1234"))
+                .name("Admin")
+                .surname("System")
+                .email("admin@example.com")
+                .province("Chiang Mai")
+                .image(avatar("admin"))
+                .active(true)
+                .roles(List.of(Role.ROLE_ADMIN))
+                .build());
+
+        String password = passwordEncoder.encode("user1234");
+        addUser("user1", "Somchai", "Jaidee", "Chiang Mai", 0, true, password, levels);
+        addUser("user2", "Suda", "Srisuk", "Bangkok", 2, true, password, levels);
+        for (int i = 3; i <= 32; i++) {
+            addUser("user" + i,
+                    FIRST_NAMES.get(i % FIRST_NAMES.size()),
+                    SURNAMES.get((i + i / FIRST_NAMES.size()) % SURNAMES.size()),
+                    PROVINCES.get(i % PROVINCES.size()),
+                    i % levels.size(),
+                    i % 7 != 0,
+                    password,
+                    levels);
+        }
+    }
+
+    private void addUser(String username, String name, String surname, String province,
+                         int levelIndex, boolean active, String password, List<Level> levels) {
+        User user = userRepository.save(User.builder()
+                .username(username)
+                .password(password)
+                .name(name)
+                .surname(surname)
+                .email(username + "@example.com")
+                .province(province)
+                .image(avatar(username))
+                .active(active)
+                .roles(List.of(Role.ROLE_USER))
+                .level(levels.get(levelIndex))
+                .build());
+        for (int i = 0; i < levelIndex; i++) {
+            LocalDateTime passedAt = LocalDateTime.now().minusDays((levelIndex - i) * 3L);
+            addExamHistory(user, levels.get(i), passedAt, (username.length() + i) % 2 == 0);
+        }
+    }
+
+    private void addExamHistory(User user, Level level, LocalDateTime passedAt, boolean failedFirst) {
+        if (failedFirst) {
+            addAttempt(user, level, 40, false, passedAt.minusDays(1));
+        }
+        addAttempt(user, level, 100, true, passedAt);
+    }
+
+    private void addAttempt(User user, Level level, int score, boolean passed, LocalDateTime attemptedAt) {
+        examAttemptRepository.save(ExamAttempt.builder()
+                .user(user)
+                .level(level)
+                .score(score)
+                .passed(passed)
+                .attemptedAt(attemptedAt)
+                .build());
+    }
+
+    private String avatar(String username) {
+        return "https://i.pravatar.cc/300?u=" + username;
+    }
 }
