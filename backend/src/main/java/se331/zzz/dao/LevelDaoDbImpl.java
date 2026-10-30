@@ -30,6 +30,6 @@ public class LevelDaoDbImpl implements LevelDao {
 
     @Override
     public Level findNext(Long id) {
-        return null;
+        return levelRepository.findFirstByIdGreaterThanOrderByIdAsc(id).orElse(null);
     }
 }
