@@ -16,6 +16,9 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
+  mvc:
+    problemdetails:
+      enabled: true
   servlet:
     multipart:
       max-file-size: 10MB
