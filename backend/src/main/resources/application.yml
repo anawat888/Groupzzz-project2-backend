@@ -31,3 +31,12 @@ application:
       expiration: 86400000
       refresh-token:
         expiration: 604800000
+
+supabase:
+  storage:
+    endpoint: ${SUPABASE_STORAGE_ENDPOINT:}
+    region: ${SUPABASE_STORAGE_REGION:ap-southeast-1}
+    access-key: ${SUPABASE_STORAGE_ACCESS_KEY:}
+    secret-key: ${SUPABASE_STORAGE_SECRET_KEY:}
+    bucket: ${SUPABASE_STORAGE_BUCKET:profile-images}
+    public-url: ${SUPABASE_STORAGE_PUBLIC_URL:}
