@@ -15,6 +15,7 @@ import se331.zzz.entity.ElearningContent;
 import se331.zzz.entity.ExamAttempt;
 import se331.zzz.entity.Level;
 import se331.zzz.entity.Question;
+import se331.zzz.user.User;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -28,15 +29,15 @@ public class ExamServiceImpl implements ExamService {
     final UserLevelPort userLevelPort;
 
     @Override
-    public List<Question> getExamQuestions(Long userId) {
-        Level level = userLevelPort.getCurrentLevel(userId);
+    public List<Question> getExamQuestions(User user) {
+        Level level = userLevelPort.getCurrentLevel(user.getId());
         return questionDao.getQuestionsByLevel(level.getId());
     }
 
     @Override
     @Transactional
-    public ExamResultDTO submit(Long userId, ExamSubmitDTO submit) {
-        Level level = userLevelPort.getCurrentLevel(userId);
+    public ExamResultDTO submit(User user, ExamSubmitDTO submit) {
+        Level level = userLevelPort.getCurrentLevel(user.getId());
         List<Question> questions = questionDao.getQuestionsByLevel(level.getId());
 
         if (questions.isEmpty()) {
@@ -61,7 +62,7 @@ public class ExamServiceImpl implements ExamService {
         boolean passed = score >= level.getPassScore();
 
         examAttemptDao.save(ExamAttempt.builder()
-                .userId(userId)
+                .user(user)
                 .score(score)
                 .passed(passed)
                 .attemptedAt(LocalDateTime.now())
@@ -73,7 +74,7 @@ public class ExamServiceImpl implements ExamService {
         if (passed) {
             Level next = levelDao.findNext(level.getId());
             if (next != null) {
-                userLevelPort.setLevel(userId, next);
+                userLevelPort.setLevel(user.getId(), next);
                 upgraded = true;
                 currentLevelId = next.getId();
             }
@@ -85,13 +86,13 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
-    public List<ExamAttempt> getHistory(Long userId) {
-        return examAttemptDao.findByUserId(userId);
+    public List<ExamAttempt> getHistory(User user) {
+        return examAttemptDao.findByUserId(user.getId());
     }
 
     @Override
-    public List<ElearningContent> getElearning(Long userId) {
-        Level level = userLevelPort.getCurrentLevel(userId);
+    public List<ElearningContent> getElearning(User user) {
+        Level level = userLevelPort.getCurrentLevel(user.getId());
         return elearningContentDao.findByLevelId(level.getId());
     }
 }
