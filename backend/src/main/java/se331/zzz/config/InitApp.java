@@ -10,6 +10,7 @@ import se331.zzz.repository.*;
 import se331.zzz.user.Role;
 import se331.zzz.user.User;
 import se331.zzz.user.UserRepository;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Component 
@@ -22,6 +23,7 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent>{
     final QuestionRepository questionRepository;
     final ElearningContentRepository elearningContentRepository;
     final UserRepository userRepository;
+    final ExamAttemptRepository examAttemptRepository;
     final PasswordEncoder passwordEncoder;
 
     static final List<String> PROVINCES = List.of("Chiang Mai", "Bangkok", "Phuket", "Khon Kaen", "Songkhla", "Nakhon Ratchasima");
@@ -148,7 +150,7 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent>{
 
     private void addUser(String username, String name, String surname, String province,
                          int levelIndex, boolean active, String password, List<Level> levels) {
-        userRepository.save(User.builder()
+        User user = userRepository.save(User.builder()
                 .username(username)
                 .password(password)
                 .name(name)
@@ -159,6 +161,27 @@ public class InitApp implements ApplicationListener<ApplicationReadyEvent>{
                 .active(active)
                 .roles(List.of(Role.ROLE_USER))
                 .level(levels.get(levelIndex))
+                .build());
+        for (int i = 0; i < levelIndex; i++) {
+            LocalDateTime passedAt = LocalDateTime.now().minusDays((levelIndex - i) * 3L);
+            addExamHistory(user, levels.get(i), passedAt, (username.length() + i) % 2 == 0);
+        }
+    }
+
+    private void addExamHistory(User user, Level level, LocalDateTime passedAt, boolean failedFirst) {
+        if (failedFirst) {
+            addAttempt(user, level, 40, false, passedAt.minusDays(1));
+        }
+        addAttempt(user, level, 100, true, passedAt);
+    }
+
+    private void addAttempt(User user, Level level, int score, boolean passed, LocalDateTime attemptedAt) {
+        examAttemptRepository.save(ExamAttempt.builder()
+                .user(user)
+                .level(level)
+                .score(score)
+                .passed(passed)
+                .attemptedAt(attemptedAt)
                 .build());
     }
 
