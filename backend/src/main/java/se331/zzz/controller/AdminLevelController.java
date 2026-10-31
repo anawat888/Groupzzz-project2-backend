@@ -5,6 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import se331.zzz.dto.BenefitRequestDTO;
+import se331.zzz.dto.LevelRequestDTO;
+import se331.zzz.dto.ServiceItemRequestDTO;
 import se331.zzz.entity.Benefit;
 import se331.zzz.entity.Level;
 import se331.zzz.entity.ServiceItem;
@@ -36,11 +39,11 @@ public class AdminLevelController {
     }
 
     @PutMapping("/admin/levels/{id}")
-    public ResponseEntity<?> updateLevel(@PathVariable("id") Long id, @RequestBody Level level) {
-        if (level.getPassScore() == null || level.getPassScore() < 0 || level.getPassScore() > 100) {
+    public ResponseEntity<?> updateLevel(@PathVariable("id") Long id, @RequestBody LevelRequestDTO request) {
+        if (request.getPassScore() == null || request.getPassScore() < 0 || request.getPassScore() > 100) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The pass score must be between 0 and 100");
         }
-        Level output = levelService.update(id, level);
+        Level output = levelService.update(id, AdminMapper.INSTANCE.getLevel(request));
         if (output != null) {
             return ResponseEntity.ok(AdminMapper.INSTANCE.getLevelDto(output));
         } else {
@@ -49,8 +52,8 @@ public class AdminLevelController {
     }
 
     @PostMapping("/admin/levels/{id}/benefits")
-    public ResponseEntity<?> addBenefit(@PathVariable("id") Long levelId, @RequestBody Benefit benefit) {
-        Benefit output = benefitService.save(levelId, benefit);
+    public ResponseEntity<?> addBenefit(@PathVariable("id") Long levelId, @RequestBody BenefitRequestDTO request) {
+        Benefit output = benefitService.save(levelId, AdminMapper.INSTANCE.getBenefit(request));
         if (output != null) {
             return ResponseEntity.status(HttpStatus.CREATED).body(AdminMapper.INSTANCE.getBenefitDto(output));
         } else {
@@ -59,8 +62,8 @@ public class AdminLevelController {
     }
 
     @PutMapping("/admin/benefits/{id}")
-    public ResponseEntity<?> updateBenefit(@PathVariable("id") Long id, @RequestBody Benefit benefit) {
-        Benefit output = benefitService.update(id, benefit);
+    public ResponseEntity<?> updateBenefit(@PathVariable("id") Long id, @RequestBody BenefitRequestDTO request) {
+        Benefit output = benefitService.update(id, AdminMapper.INSTANCE.getBenefit(request));
         if (output != null) {
             return ResponseEntity.ok(AdminMapper.INSTANCE.getBenefitDto(output));
         } else {
@@ -79,8 +82,8 @@ public class AdminLevelController {
     }
 
     @PostMapping("/admin/levels/{id}/services")
-    public ResponseEntity<?> addService(@PathVariable("id") Long levelId, @RequestBody ServiceItem serviceItem) {
-        ServiceItem output = serviceItemService.save(levelId, serviceItem);
+    public ResponseEntity<?> addService(@PathVariable("id") Long levelId, @RequestBody ServiceItemRequestDTO request) {
+        ServiceItem output = serviceItemService.save(levelId, AdminMapper.INSTANCE.getServiceItem(request));
         if (output != null) {
             return ResponseEntity.status(HttpStatus.CREATED).body(AdminMapper.INSTANCE.getServiceItemDto(output));
         } else {
@@ -89,8 +92,8 @@ public class AdminLevelController {
     }
 
     @PutMapping("/admin/services/{id}")
-    public ResponseEntity<?> updateService(@PathVariable("id") Long id, @RequestBody ServiceItem serviceItem) {
-        ServiceItem output = serviceItemService.update(id, serviceItem);
+    public ResponseEntity<?> updateService(@PathVariable("id") Long id, @RequestBody ServiceItemRequestDTO request) {
+        ServiceItem output = serviceItemService.update(id, AdminMapper.INSTANCE.getServiceItem(request));
         if (output != null) {
             return ResponseEntity.ok(AdminMapper.INSTANCE.getServiceItemDto(output));
         } else {
@@ -108,4 +111,3 @@ public class AdminLevelController {
         }
     }
 }
-
