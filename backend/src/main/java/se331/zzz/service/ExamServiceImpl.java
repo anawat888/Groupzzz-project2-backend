@@ -91,6 +91,11 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
+    public List<ExamAttempt> getHistoryByUserId(Long userId) {
+        return examAttemptDao.findByUserId(userId);
+    }
+
+    @Override
     public List<ElearningContent> getElearning(User user) {
         Level level = userLevelPort.getCurrentLevel(user.getId());
         return elearningContentDao.findByLevelId(level.getId());
