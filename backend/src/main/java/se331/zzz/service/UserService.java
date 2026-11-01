@@ -11,4 +11,6 @@ public interface UserService {
     User updateProfile(Long id, UserUpdateRequest request);
     List<Level> getBadges(Long id);
     Page<User> getUsers(String name, String province, Long levelId, Integer pageSize, Integer page);
+    User updateStatus(Long id, Boolean active);
+
 }

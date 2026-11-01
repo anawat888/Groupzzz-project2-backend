@@ -54,5 +54,13 @@ public class UserServiceImpl implements UserService {
         }
         return userDao.getUsersByLevel(name, province, levelId, pageSize, page);
     }
+        @Override
+    @Transactional
+    public User updateStatus(Long id, Boolean active) {
+        User user = getUser(id);
+        user.setActive(active);
+        return userDao.save(user);
+    }
+
 
 }
