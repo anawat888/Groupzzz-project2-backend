@@ -1,0 +1,13 @@
+application:
+  security:
+    jwt:
+      secret-key: replace-with-output-of-openssl-rand-base64-48
+
+supabase:
+  storage:
+    endpoint: https://<project-ref>.storage.supabase.co/storage/v1/s3
+    region: ap-southeast-1
+    access-key: <s3-access-key-id>
+    secret-key: <s3-secret-access-key>
+    bucket: profile-images
+    public-url: https://<project-ref>.supabase.co/storage/v1/object/public

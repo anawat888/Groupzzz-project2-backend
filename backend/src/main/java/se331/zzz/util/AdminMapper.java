@@ -1,10 +1,11 @@
 package se331.zzz.util;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 import se331.zzz.dto.*;
 import se331.zzz.entity.*;
 import java.util.List;
-@Mapper 
+@Mapper
 
 public interface AdminMapper {
     AdminMapper INSTANCE = Mappers.getMapper(AdminMapper.class);
@@ -27,4 +28,18 @@ public interface AdminMapper {
 
     ElearningContentDTO getElearningContentDto(ElearningContent content);
     List<ElearningContentDTO> getElearningContentDto(List<ElearningContent> contents);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "benefits", ignore = true)
+    @Mapping(target = "services", ignore = true)
+    @Mapping(target = "questions", ignore = true)
+    Level getLevel(LevelRequestDTO dto);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "level", ignore = true)
+    Benefit getBenefit(BenefitRequestDTO dto);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "level", ignore = true)
+    ServiceItem getServiceItem(ServiceItemRequestDTO dto);
 }

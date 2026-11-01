@@ -10,6 +10,7 @@ import se331.zzz.entity.Level;
 import se331.zzz.entity.Question;
 import se331.zzz.service.QuestionService;
 import se331.zzz.util.AdminMapper;
+import java.util.HashSet;
 
 @RestController
 @RequiredArgsConstructor
@@ -57,7 +58,19 @@ public class AdminQuestionController {
         if (request.getLevelId() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The level is required");
         }
-        if (request.getChoices() == null || !request.getChoices().contains(request.getCorrectAnswer())) {
+        if (request.getQuestion() == null || request.getQuestion().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The question is required");
+        }
+        if (request.getChoices() == null || request.getChoices().size() != 4) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The question must have exactly 4 choices");
+        }
+        if (request.getChoices().stream().anyMatch(c -> c == null || c.isBlank())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "All choices must be filled");
+        }
+        if (new HashSet<>(request.getChoices()).size() != request.getChoices().size()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The choices must be different");
+        }
+        if (!request.getChoices().contains(request.getCorrectAnswer())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The correct answer must be one of the choices");
         }
     }
