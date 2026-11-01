@@ -6,6 +6,8 @@ import org.springframework.stereotype.Repository;
 import se331.zzz.user.User;
 import se331.zzz.user.UserRepository;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 @Repository
 @RequiredArgsConstructor
@@ -26,5 +28,17 @@ public class UserDaoDbImpl implements UserDao {
     @Override
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
+    }
+
+    @Override
+    public Page<User> getUsers(String name, String province, Integer pageSize, Integer page) {
+        return userRepository.findByNameIgnoreCaseContainingAndProvinceIgnoreCaseContainingAndLevelIsNotNullOrSurnameIgnoreCaseContainingAndProvinceIgnoreCaseContainingAndLevelIsNotNullOrderById(
+                name, province, name, province, PageRequest.of(page - 1, pageSize));
+    }
+
+    @Override
+    public Page<User> getUsersByLevel(String name, String province, Long levelId, Integer pageSize, Integer page) {
+        return userRepository.findByNameIgnoreCaseContainingAndProvinceIgnoreCaseContainingAndLevel_IdOrSurnameIgnoreCaseContainingAndProvinceIgnoreCaseContainingAndLevel_IdOrderById(
+                name, province, levelId, name, province, levelId, PageRequest.of(page - 1, pageSize));
     }
 }
