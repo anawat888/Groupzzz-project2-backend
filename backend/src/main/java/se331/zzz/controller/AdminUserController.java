@@ -8,6 +8,10 @@ import org.springframework.web.bind.annotation.*;
 import se331.zzz.service.UserService;
 import se331.zzz.user.User;
 import se331.zzz.util.UserMapper;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
+import se331.zzz.dto.UserStatusRequestDTO;
+import se331.zzz.dto.UserUpdateRequest;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,5 +33,16 @@ public class AdminUserController {
     @GetMapping("/admin/users/{id}")
     public ResponseEntity<?> getUser(@PathVariable("id") Long id) {
         return ResponseEntity.ok(UserMapper.INSTANCE.getUserDto(userService.getUser(id)));
+    }
+    @PutMapping("/admin/users/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable("id") Long id, @RequestBody UserUpdateRequest request) {
+        return ResponseEntity.ok(UserMapper.INSTANCE.getUserDto(userService.updateProfile(id, request)));
+    }
+    @PatchMapping("/admin/users/{id}/status")
+    public ResponseEntity<?> updateStatus(@PathVariable("id") Long id, @RequestBody UserStatusRequestDTO request) {
+        if (request.getActive() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The active status is required");
+        }
+        return ResponseEntity.ok(UserMapper.INSTANCE.getUserDto(userService.updateStatus(id, request.getActive())));
     }
 }
