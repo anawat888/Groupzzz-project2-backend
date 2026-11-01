@@ -11,6 +11,7 @@ import se331.zzz.dto.UserUpdateRequest;
 import se331.zzz.entity.Level;
 import se331.zzz.user.User;
 import java.util.List;
+import org.springframework.data.domain.Page;
 
 @Service
 @RequiredArgsConstructor
@@ -46,4 +47,20 @@ public class UserServiceImpl implements UserService {
                 .filter(level -> level.getId() <= currentLevelId)
                 .toList();
     }
+        @Override
+    public Page<User> getUsers(String name, String province, Long levelId, Integer pageSize, Integer page) {
+        if (levelId == null) {
+            return userDao.getUsers(name, province, pageSize, page);
+        }
+        return userDao.getUsersByLevel(name, province, levelId, pageSize, page);
+    }
+        @Override
+    @Transactional
+    public User updateStatus(Long id, Boolean active) {
+        User user = getUser(id);
+        user.setActive(active);
+        return userDao.save(user);
+    }
+
+
 }
