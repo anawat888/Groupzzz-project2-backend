@@ -19,4 +19,5 @@ public interface UserMapper {
     UserDTO getUserDto(User user);
 
     List<LevelSummaryDTO> getBadgeDto(List<Level> levels);
+    List<UserDTO> getUserDto(List<User> users);
 }
